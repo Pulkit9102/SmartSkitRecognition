@@ -1,0 +1,16 @@
+{
+  "feature_extractor": "simple",
+  "image_size": [
+    224,
+    224
+  ],
+  "num_classes": 6,
+  "class_names": [
+    "acne",
+    "eczema",
+    "melanoma",
+    "psoriasis",
+    "rosacea",
+    "vitiligo"
+  ]
+}

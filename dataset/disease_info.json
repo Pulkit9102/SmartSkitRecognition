@@ -1,0 +1,56 @@
+{
+  "acne": {
+    "description": "Common skin condition causing pimples and spots",
+    "severity": "mild-moderate",
+    "common_locations": [
+      "face",
+      "back",
+      "chest"
+    ]
+  },
+  "eczema": {
+    "description": "Chronic condition causing itchy, inflamed skin",
+    "severity": "mild-severe",
+    "common_locations": [
+      "hands",
+      "face",
+      "elbows",
+      "knees"
+    ]
+  },
+  "melanoma": {
+    "description": "Serious skin cancer requiring immediate attention",
+    "severity": "severe",
+    "common_locations": [
+      "any body part"
+    ]
+  },
+  "psoriasis": {
+    "description": "Autoimmune condition causing scaly skin patches",
+    "severity": "moderate-severe",
+    "common_locations": [
+      "elbows",
+      "knees",
+      "scalp",
+      "lower back"
+    ]
+  },
+  "rosacea": {
+    "description": "Facial redness and visible blood vessels",
+    "severity": "mild-moderate",
+    "common_locations": [
+      "face",
+      "nose",
+      "cheeks"
+    ]
+  },
+  "vitiligo": {
+    "description": "Loss of skin pigmentation in patches",
+    "severity": "mild-moderate",
+    "common_locations": [
+      "face",
+      "hands",
+      "around body openings"
+    ]
+  }
+}

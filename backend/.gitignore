@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# TensorFlow/Keras
+*.h5
+*.pb
+checkpoints/
+logs/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Model outputs (keep structure, ignore generated files)
+model/skin_disease_model.h5
+model/class_names.json
+model/training_history.json
+model/*.png
+model/plots/
+model/logs/
+
+# Dataset (optional - uncomment if datasets are large)
+# dataset/

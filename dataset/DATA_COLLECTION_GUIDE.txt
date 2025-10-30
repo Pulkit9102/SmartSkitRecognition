@@ -1,0 +1,83 @@
+SKIN DISEASE DATASET - DATA COLLECTION GUIDE
+============================================================
+
+RECOMMENDED DATASETS:
+------------------------------------------------------------
+1. HAM10000 (Skin Cancer)
+   https://www.kaggle.com/datasets/kmader/skin-cancer-mnist-ham10000
+
+2. ISIC Archive (Melanoma)
+   https://www.isic-archive.com/
+
+3. DermNet (Various Conditions)
+   https://dermnetnz.org/
+
+4. SD-198 (Skin Diseases)
+   Search: 'SD-198 skin disease dataset'
+
+
+DATA COLLECTION GUIDELINES:
+------------------------------------------------------------
+1. Image Quality:
+   - Clear, well-lit images
+   - Focused on affected area
+   - Minimal blur or obstruction
+
+2. Quantity:
+   - Minimum: 50 images per disease
+   - Recommended: 100-500 images per disease
+   - Professional: 500+ images per disease
+
+3. Diversity:
+   - Different skin tones
+   - Various disease stages
+   - Different body locations
+   - Multiple age groups
+
+4. Data Split:
+   - Training: 70-80% of images
+   - Validation: 10-15% of images
+   - Test: 10-15% of images
+
+5. Ethics & Privacy:
+   - Use only publicly available or consented data
+   - Remove any personal identifiers
+   - Follow data usage agreements
+   - Comply with medical data regulations
+
+DISEASES INCLUDED:
+------------------------------------------------------------
+
+ACNE:
+  Description: Common skin condition causing pimples and spots
+  Severity: mild-moderate
+  Locations: face, back, chest
+
+ECZEMA:
+  Description: Chronic condition causing itchy, inflamed skin
+  Severity: mild-severe
+  Locations: hands, face, elbows, knees
+
+MELANOMA:
+  Description: Serious skin cancer requiring immediate attention
+  Severity: severe
+  Locations: any body part
+
+PSORIASIS:
+  Description: Autoimmune condition causing scaly skin patches
+  Severity: moderate-severe
+  Locations: elbows, knees, scalp, lower back
+
+ROSACEA:
+  Description: Facial redness and visible blood vessels
+  Severity: mild-moderate
+  Locations: face, nose, cheeks
+
+VITILIGO:
+  Description: Loss of skin pigmentation in patches
+  Severity: mild-moderate
+  Locations: face, hands, around body openings
+
+============================================================
+After collecting images, run: python dataset_helper.py
+============================================================

@@ -1,0 +1,170 @@
+═══════════════════════════════════════════════════════════════
+        COPY & PASTE THESE COMMANDS - COMPLETE SETUP
+═══════════════════════════════════════════════════════════════
+
+📍 YOU ARE HERE: Backend folder (already opened in terminal)
+
+═══════════════════════════════════════════════════════════════
+                    PART 1: BACKEND SETUP
+═══════════════════════════════════════════════════════════════
+
+Copy these commands ONE BY ONE and paste into your PowerShell:
+
+─────────────────────────────────────────────────────────────
+COMMAND 1: Create virtual environment (if not exists)
+─────────────────────────────────────────────────────────────
+python -m venv venv
+
+─────────────────────────────────────────────────────────────
+COMMAND 2: Activate virtual environment
+─────────────────────────────────────────────────────────────
+.\venv\Scripts\Activate.ps1
+
+IF YOU GET ERROR "cannot be loaded because running scripts is disabled"
+RUN THIS FIRST (one time only):
+─────────────────────────────────────────────────────────────
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+THEN RUN ACTIVATE AGAIN:
+.\venv\Scripts\Activate.ps1
+
+YOU SHOULD SEE: (venv) before your prompt
+
+─────────────────────────────────────────────────────────────
+COMMAND 3: Upgrade pip
+─────────────────────────────────────────────────────────────
+python -m pip install --upgrade pip
+
+─────────────────────────────────────────────────────────────
+COMMAND 4: Install ALL dependencies (takes 5-10 minutes)
+─────────────────────────────────────────────────────────────
+pip install -r requirements.txt
+
+WAIT FOR INSTALLATION TO COMPLETE...
+
+IF TENSORFLOW FAILS:
+Run this instead (installs everything except TensorFlow):
+pip install flask flask-cors numpy pillow python-dotenv google-search-results scikit-learn matplotlib
+
+─────────────────────────────────────────────────────────────
+COMMAND 5: Start the backend server
+─────────────────────────────────────────────────────────────
+python app.py
+
+YOU SHOULD SEE:
+✓ TensorFlow not available... (OK - you'll install later)
+✓ Model not found... (OK - you need to train it)
+✓ Starting Flask server...
+✓ Running on http://127.0.0.1:5000
+
+KEEP THIS TERMINAL RUNNING!
+
+═══════════════════════════════════════════════════════════════
+                    PART 2: FRONTEND SETUP
+═══════════════════════════════════════════════════════════════
+
+OPEN A NEW POWERSHELL WINDOW (don't close backend!)
+
+─────────────────────────────────────────────────────────────
+COMMAND 1: Navigate to frontend folder
+─────────────────────────────────────────────────────────────
+cd "C:\Users\pulkit\OneDrive\Desktop\skin disease\frontend"
+
+─────────────────────────────────────────────────────────────
+COMMAND 2: Install dependencies (takes 2-5 minutes)
+─────────────────────────────────────────────────────────────
+npm install
+
+WAIT FOR INSTALLATION TO COMPLETE...
+
+─────────────────────────────────────────────────────────────
+COMMAND 3: Start the frontend
+─────────────────────────────────────────────────────────────
+npm start
+
+BROWSER WILL OPEN AUTOMATICALLY AT: http://localhost:3000
+
+KEEP THIS TERMINAL RUNNING TOO!
+
+═══════════════════════════════════════════════════════════════
+                    PART 3: TRAIN MODEL (LATER)
+═══════════════════════════════════════════════════════════════
+
+WHEN YOU HAVE TRAINING IMAGES:
+
+OPEN A THIRD POWERSHELL WINDOW
+
+─────────────────────────────────────────────────────────────
+COMMAND 1: Navigate to model folder
+─────────────────────────────────────────────────────────────
+cd "C:\Users\pulkit\OneDrive\Desktop\skin disease\model"
+
+─────────────────────────────────────────────────────────────
+COMMAND 2: Create dataset structure
+─────────────────────────────────────────────────────────────
+python create_sample_dataset.py
+
+Follow the prompts, then add your images to:
+  dataset/train/[disease_name]/
+  dataset/validation/[disease_name]/
+
+─────────────────────────────────────────────────────────────
+COMMAND 3: Train the model
+─────────────────────────────────────────────────────────────
+python train_model.py
+
+THIS WILL TAKE 10-30 MINUTES
+
+═══════════════════════════════════════════════════════════════
+                        CURRENT STATUS
+═══════════════════════════════════════════════════════════════
+
+RIGHT NOW, WITHOUT MODEL:
+✅ Backend will run (but predictions disabled)
+✅ Frontend will run and look beautiful
+✅ You can test the UI
+❌ Can't make predictions yet (need model)
+
+TO ENABLE PREDICTIONS:
+1. Add 50+ images per disease to dataset folders
+2. Run: python train_model.py
+3. Restart backend: python app.py
+
+═══════════════════════════════════════════════════════════════
+                    QUICK TEST (NO MODEL)
+═══════════════════════════════════════════════════════════════
+
+YOU CAN TEST RIGHT NOW:
+
+1. Make sure backend is running (Terminal 1)
+2. Make sure frontend is running (Terminal 2)
+3. Open browser: http://localhost:3000
+4. See the beautiful UI!
+5. Try uploading an image (prediction will fail - that's OK)
+6. Backend will show error message explaining you need to train model
+
+═══════════════════════════════════════════════════════════════
+                        SUMMARY
+═══════════════════════════════════════════════════════════════
+
+TERMINAL 1 (Backend):
+cd backend
+.\venv\Scripts\Activate.ps1
+python app.py
+→ Keep running
+
+TERMINAL 2 (Frontend):
+cd frontend
+npm start
+→ Keep running
+
+TERMINAL 3 (Later - Model Training):
+cd model
+python train_model.py
+→ Run when you have images
+
+═══════════════════════════════════════════════════════════════
+
+🎯 START NOW: Copy COMMAND 1 from PART 1 and paste it!
+
+═══════════════════════════════════════════════════════════════
