@@ -59,7 +59,6 @@ npm install
 ## 📋 Table of Contents
 
 - [Features](#features)
-- [Google Drive Dataset Management](#google-drive-dataset-management)
 - [System Architecture](#system-architecture)
 - [Project Structure](#project-structure)
 - [Technology Stack](#technology-stack)
@@ -101,56 +100,7 @@ npm install
 
 ---
 
-## 📁 Google Drive Dataset Management
-
-### Why Use Google Drive?
-
-✅ **Easy Sharing**: Share datasets with team  
-✅ **Cloud Backup**: Never lose training data  
-✅ **Deployment Ready**: Download on any server  
-✅ **Free Storage**: 15GB free space  
-
-### Quick Setup (3 Steps)
-
-**1. Prepare Dataset:**
-```powershell
-# Zip your dataset folder
-Compress-Archive -Path model\dataset -DestinationPath skin_disease_dataset.zip
-```
-
-**2. Upload to Google Drive:**
-- Go to https://drive.google.com
-- Upload `skin_disease_dataset.zip`
-- Right-click → Share → "Anyone with the link"
-- Copy the sharing link
-
-**3. Download & Use:**
-```powershell
-# Double-click this file:
-download_dataset.bat
-
-# Or run manually:
-cd model
-pip install gdown
-python gdrive_dataset_manager.py
-# Paste your Google Drive link
-```
-
-### For Deployment
-
-```bash
-# On your server
-pip install gdown
-python model/gdrive_dataset_manager.py "$GDRIVE_DATASET_URL"
-python model/train_model_simple.py
-```
-
-📖 **See [GDRIVE_SETUP.md](GDRIVE_SETUP.md) for complete Google Drive guide**  
-📊 **See [DATASET_WORKFLOW.md](DATASET_WORKFLOW.md) for workflow diagrams**
-
----
-
-## 🛠️ Technology Stack
+## ️ Technology Stack
 
 ### Frontend
 - **React** 18.2.0 - UI framework
@@ -170,10 +120,6 @@ python model/train_model_simple.py
 - **NumPy** - Numerical computing
 - **Matplotlib** - Visualization
 
-### Cloud Integration
-- **gdown** - Google Drive downloads
-- **Google Drive** - Dataset storage
-
 ### Optional Enhancements
 - **PyTorch** - Deep learning
 - **torchvision** - Pre-trained models
@@ -188,11 +134,8 @@ skin disease/
 │
 ├── 📄 README.md                   # Complete project guide
 ├── 📄 HOW_TO_RUN.md              # Step-by-step instructions
-├── 📄 GDRIVE_SETUP.md            # Google Drive setup guide
-├── 📄 DATASET_WORKFLOW.md        # Dataset workflow diagrams
-├── 🚀 start_backend.bat          # Start backend server
+├──  start_backend.bat          # Start backend server
 ├── 🚀 start_frontend.bat         # Start frontend server
-├── 🚀 download_dataset.bat       # Download from Google Drive
 │
 ├── backend/                      # Flask API Server
 │   ├── venv/                     # Virtual environment ✅
@@ -225,7 +168,6 @@ skin disease/
     ├── dataset/                 # Training images
     │   ├── train/              # 180 images
     │   └── validation/         # 60 images
-    ├── gdrive_dataset_manager.py  # Google Drive integration
     ├── train_model_simple.py   # Training script
     └── generate_sample_images.py
 ```
@@ -277,12 +219,6 @@ For real medical use:
 Download from medical datasets:
 - **HAM10000** (Kaggle): https://www.kaggle.com/datasets/kmader/skin-cancer-mnist-ham10000
 - **ISIC Archive**: https://www.isic-archive.com/
-
-Or use Google Drive:
-```powershell
-.\download_dataset.bat
-# Paste your Google Drive link
-```
 
 ### Step 2: Organize Images
 

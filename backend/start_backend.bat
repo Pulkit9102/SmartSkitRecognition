@@ -42,6 +42,6 @@ echo.
 echo ========================================
 echo.
 
-python app.py
+python app_simple.py
 
 pause
