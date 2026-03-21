@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import numpy as np
 from PIL import Image
@@ -153,6 +153,19 @@ def health_check():
         'classes_loaded': len(class_names) > 0,
         'serpapi_configured': bool(SERP_API_KEY)
     })
+
+@app.route('/', methods=['GET'])
+def root():
+    """Root endpoint to avoid 404 when opening backend URL in a browser."""
+    return jsonify({
+        'message': 'Smart Skin Recognition backend is running',
+        'health_endpoint': '/api/health'
+    })
+
+@app.route('/favicon.ico', methods=['GET'])
+def favicon():
+    """Return empty favicon response to avoid noisy 404 logs."""
+    return Response(status=204)
 
 @app.route('/api/predict', methods=['POST'])
 def predict():
