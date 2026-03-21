@@ -6,6 +6,7 @@ import CheckDiseasePage from './pages/CheckDiseasePage';
 import CommonDiseasesPage from './pages/CommonDiseasesPage';
 import PrecautionsPage from './pages/PrecautionsPage';
 import AboutPage from './pages/AboutPage';
+import AuthPage from './pages/AuthPage';
 import apiService from './services/apiService';
 
 function App() {
@@ -84,6 +85,8 @@ function App() {
         return <PrecautionsPage />;
       case 'about':
         return <AboutPage />;
+      case 'auth':
+        return <AuthPage />;
       default:
         return <HomePage onNavigate={handleNavigate} />;
     }

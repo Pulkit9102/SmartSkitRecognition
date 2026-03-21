@@ -9,7 +9,8 @@ const Navigation = ({ currentPage, onNavigate }) => {
     { id: 'check-disease', label: 'Check Disease', icon: '🔍' },
     { id: 'common-diseases', label: 'Common Diseases', icon: '📋' },
     { id: 'precautions', label: 'Precautions', icon: '🛡️' },
-    { id: 'about', label: 'About Us', icon: 'ℹ️' }
+    { id: 'about', label: 'About Us', icon: 'ℹ️' },
+    { id: 'auth', label: 'Sign In / Sign Up', icon: '👤' }
   ];
 
   const handleNavigation = (pageId) => {
