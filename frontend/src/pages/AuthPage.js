@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './AuthPage.css';
+import apiService from '../services/apiService';
 
 const initialSignInState = {
   email: '',
@@ -13,12 +14,13 @@ const initialSignUpState = {
   confirmPassword: ''
 };
 
-const AuthPage = () => {
+const AuthPage = ({ onAuthSuccess }) => {
   const [activeTab, setActiveTab] = useState('signin');
   const [signInForm, setSignInForm] = useState(initialSignInState);
   const [signUpForm, setSignUpForm] = useState(initialSignUpState);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSignInChange = (event) => {
     const { name, value } = event.target;
@@ -30,7 +32,7 @@ const AuthPage = () => {
     setSignUpForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSignInSubmit = (event) => {
+  const handleSignInSubmit = async (event) => {
     event.preventDefault();
     setError('');
     setMessage('');
@@ -40,10 +42,36 @@ const AuthPage = () => {
       return;
     }
 
-    setMessage('Sign in form submitted. Connect this to your backend auth API.');
+    setLoading(true);
+
+    try {
+      const response = await apiService.login({
+        email: signInForm.email,
+        password: signInForm.password
+      });
+
+      if (response?.token) {
+        localStorage.setItem('authToken', response.token);
+      }
+
+      if (response?.user) {
+        localStorage.setItem('authUser', JSON.stringify(response.user));
+      }
+
+      setMessage(`Welcome back, ${response?.user?.name || 'User'}! Login successful.`);
+      setSignInForm(initialSignInState);
+
+      if (onAuthSuccess) {
+        onAuthSuccess(response?.user || null);
+      }
+    } catch (submitError) {
+      setError(submitError.message || 'Login failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSignUpSubmit = (event) => {
+  const handleSignUpSubmit = async (event) => {
     event.preventDefault();
     setError('');
     setMessage('');
@@ -63,11 +91,49 @@ const AuthPage = () => {
       return;
     }
 
-    setMessage('Sign up form submitted. Connect this to your backend auth API.');
+    setLoading(true);
+
+    try {
+      const response = await apiService.signup({
+        name: signUpForm.fullName,
+        email: signUpForm.email,
+        password: signUpForm.password
+      });
+
+      if (response?.token) {
+        localStorage.setItem('authToken', response.token);
+      }
+
+      if (response?.user) {
+        localStorage.setItem('authUser', JSON.stringify(response.user));
+      }
+
+      setMessage('Account created successfully. You are now logged in.');
+      setSignUpForm(initialSignUpState);
+      setActiveTab('signin');
+
+      if (onAuthSuccess) {
+        onAuthSuccess(response?.user || null);
+      }
+    } catch (submitError) {
+      setError(submitError.message || 'Signup failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="auth-page">
+      <header className="auth-page-header">
+        <h1 className="auth-page-title">
+          <span className="auth-title-icon">🔐</span>
+          Account Access
+        </h1>
+        <p className="auth-page-description">
+          Securely sign in to your SkinCare AI account or create a new profile.
+        </p>
+      </header>
+
       <section className="auth-card">
         <h1>Welcome</h1>
         <p className="auth-subtitle">Sign in to continue or create a new account.</p>
@@ -119,8 +185,8 @@ const AuthPage = () => {
               placeholder="Enter your password"
             />
 
-            <button type="submit" className="btn btn-primary auth-submit">
-              Sign In
+            <button type="submit" className="btn btn-primary auth-submit" disabled={loading}>
+              {loading ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
         ) : (
@@ -165,14 +231,18 @@ const AuthPage = () => {
               placeholder="Re-enter password"
             />
 
-            <button type="submit" className="btn btn-primary auth-submit">
-              Create Account
+            <button type="submit" className="btn btn-primary auth-submit" disabled={loading}>
+              {loading ? 'Creating Account...' : 'Create Account'}
             </button>
           </form>
         )}
 
         {error && <p className="auth-error">{error}</p>}
         {message && <p className="auth-message">{message}</p>}
+
+        <p className="auth-note">
+          Your password is encrypted before storage and authentication is token-based.
+        </p>
       </section>
     </div>
   );

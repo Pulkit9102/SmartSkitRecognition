@@ -9,8 +9,15 @@ import AboutPage from './pages/AboutPage';
 import AuthPage from './pages/AuthPage';
 import apiService from './services/apiService';
 
+const getStoredAuth = () => {
+  const token = localStorage.getItem('authToken');
+  const user = localStorage.getItem('authUser');
+  return Boolean(token && user);
+};
+
 function App() {
-  const [currentPage, setCurrentPage] = useState('home');
+  const [isAuthenticated, setIsAuthenticated] = useState(getStoredAuth);
+  const [currentPage, setCurrentPage] = useState(getStoredAuth() ? 'home' : 'auth');
   const [selectedImage, setSelectedImage] = useState(null);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -18,11 +25,29 @@ function App() {
   const [useSerpApi, setUseSerpApi] = useState(true);
 
   const handleNavigate = (pageId) => {
+    if (!isAuthenticated && pageId !== 'auth') {
+      setCurrentPage('auth');
+      return;
+    }
+
     setCurrentPage(pageId);
     // Reset disease check state when navigating away
     if (pageId !== 'check-disease') {
       handleReset();
     }
+  };
+
+  const handleAuthSuccess = () => {
+    setIsAuthenticated(true);
+    setCurrentPage('home');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('authUser');
+    setIsAuthenticated(false);
+    setCurrentPage('auth');
+    handleReset();
   };
 
   const handleImageSelect = useCallback((file) => {
@@ -86,32 +111,48 @@ function App() {
       case 'about':
         return <AboutPage />;
       case 'auth':
-        return <AuthPage />;
+        return <AuthPage onAuthSuccess={handleAuthSuccess} />;
       default:
         return <HomePage onNavigate={handleNavigate} />;
     }
   };
 
+  const renderProtectedContent = () => {
+    if (!isAuthenticated) {
+      return <AuthPage onAuthSuccess={handleAuthSuccess} />;
+    }
+
+    return renderPage();
+  };
+
   return (
     <div className="App">
-      <Navigation currentPage={currentPage} onNavigate={handleNavigate} />
+      {isAuthenticated && (
+        <Navigation
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+          onLogout={handleLogout}
+        />
+      )}
       
       <main className="main-content">
         <div className="container">
-          {renderPage()}
+          {renderProtectedContent()}
         </div>
       </main>
 
-      <footer className="footer">
-        <div className="footer-content">
-          <p>&copy; 2025 SkinCare AI - Powered by Advanced Machine Learning</p>
-          <p className="disclaimer">
-            <strong>⚕️ Medical Disclaimer:</strong> This AI tool is for educational and informational purposes only. 
-            It is not a substitute for professional medical advice, diagnosis, or treatment. 
-            Always consult a qualified dermatologist for accurate diagnosis and treatment.
-          </p>
-        </div>
-      </footer>
+      {isAuthenticated && (
+        <footer className="footer">
+          <div className="footer-content">
+            <p>&copy; 2025 SkinCare AI - Powered by Advanced Machine Learning</p>
+            <p className="disclaimer">
+              <strong>⚕️ Medical Disclaimer:</strong> This AI tool is for educational and informational purposes only. 
+              It is not a substitute for professional medical advice, diagnosis, or treatment. 
+              Always consult a qualified dermatologist for accurate diagnosis and treatment.
+            </p>
+          </div>
+        </footer>
+      )}
     </div>
   );
 }

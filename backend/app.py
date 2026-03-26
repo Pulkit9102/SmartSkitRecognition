@@ -7,12 +7,22 @@ import os
 import json
 from serpapi import GoogleSearch
 from dotenv import load_dotenv
+from config.db import init_mongo_db
 
 # Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+
+try:
+    from routes.auth_routes import auth_bp
+
+    app.register_blueprint(auth_bp)
+    AUTH_ENABLED = True
+except Exception as auth_import_error:
+    AUTH_ENABLED = False
+    print(f"Auth module unavailable: {auth_import_error}")
 
 # Configuration
 MODEL_PATH = os.path.join('..', 'model', 'skin_disease_model.h5')
@@ -151,7 +161,8 @@ def health_check():
         'status': 'healthy',
         'model_loaded': model is not None,
         'classes_loaded': len(class_names) > 0,
-        'serpapi_configured': bool(SERP_API_KEY)
+        'serpapi_configured': bool(SERP_API_KEY),
+        'auth_enabled': AUTH_ENABLED
     })
 
 @app.route('/', methods=['GET'])
@@ -249,6 +260,13 @@ def search_recommendations():
 
 if __name__ == '__main__':
     print("Loading model and class names...")
+    mongo_db = init_mongo_db() if AUTH_ENABLED else None
+    if AUTH_ENABLED and mongo_db is not None:
+        print("MongoDB connected for authentication")
+    elif AUTH_ENABLED:
+        print("MongoDB not configured. Auth endpoints will be unavailable until configured.")
+    else:
+        print("Auth routes are disabled due to missing auth dependencies.")
     load_model_and_classes()
     print("Starting Flask server...")
     app.run(debug=True, host='0.0.0.0', port=5000)

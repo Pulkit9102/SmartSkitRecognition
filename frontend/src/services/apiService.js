@@ -4,6 +4,32 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api
 
 const apiService = {
   /**
+   * Register a new user
+   * @param {{name: string, email: string, password: string}} payload
+   */
+  async signup(payload) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/signup`, payload);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  },
+
+  /**
+   * Login existing user
+   * @param {{email: string, password: string}} payload
+   */
+  async login(payload) {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, payload);
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  },
+
+  /**
    * Health check to verify backend is running
    */
   async healthCheck() {

@@ -118,6 +118,17 @@
   box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
 }
 
+.nav-link-logout {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.8) 0%, rgba(220, 38, 38, 0.8) 100%);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: white;
+}
+
+.nav-link-logout:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+
 .nav-icon {
   font-size: 1.25rem;
 }

@@ -8,12 +8,22 @@ import json
 import pickle
 from serpapi import GoogleSearch
 from dotenv import load_dotenv
+from config.db import init_mongo_db
 
 # Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+
+try:
+    from routes.auth_routes import auth_bp
+
+    app.register_blueprint(auth_bp)
+    AUTH_ENABLED = True
+except Exception as auth_import_error:
+    AUTH_ENABLED = False
+    print(f"⚠ Auth module unavailable: {auth_import_error}")
 
 # Configuration
 MODEL_DIR = os.path.join('..', 'model', 'trained_model')
@@ -233,6 +243,7 @@ def health_check():
         'model_loaded': model is not None,
         'classes_loaded': len(class_names) > 0,
         'serpapi_configured': bool(SERP_API_KEY),
+        'auth_enabled': AUTH_ENABLED,
         'feature_extractor': model_config.get('feature_extractor', 'unknown'),
         'num_classes': len(class_names)
     })
@@ -337,6 +348,13 @@ if __name__ == '__main__':
     print("=" * 60)
     print("  SIMPLE SKIN DISEASE CLASSIFICATION API")
     print("=" * 60)
+    mongo_db = init_mongo_db() if AUTH_ENABLED else None
+    if AUTH_ENABLED and mongo_db is not None:
+        print("✓ MongoDB connected for authentication")
+    elif AUTH_ENABLED:
+        print("⚠ MongoDB not configured. Auth endpoints will be unavailable until configured.")
+    else:
+        print("⚠ Auth routes are disabled due to missing auth dependencies.")
     load_model_and_classes()
     print("Starting Flask server on http://localhost:5000")
     print("=" * 60)

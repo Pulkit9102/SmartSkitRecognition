@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Navigation.css';
 
-const Navigation = ({ currentPage, onNavigate }) => {
+const Navigation = ({ currentPage, onNavigate, onLogout }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const menuItems = [
@@ -9,12 +9,18 @@ const Navigation = ({ currentPage, onNavigate }) => {
     { id: 'check-disease', label: 'Check Disease', icon: '🔍' },
     { id: 'common-diseases', label: 'Common Diseases', icon: '📋' },
     { id: 'precautions', label: 'Precautions', icon: '🛡️' },
-    { id: 'about', label: 'About Us', icon: 'ℹ️' },
-    { id: 'auth', label: 'Sign In / Sign Up', icon: '👤' }
+    { id: 'about', label: 'About Us', icon: 'ℹ️' }
   ];
 
   const handleNavigation = (pageId) => {
     onNavigate(pageId);
+    setMobileMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    }
     setMobileMenuOpen(false);
   };
 
@@ -46,6 +52,13 @@ const Navigation = ({ currentPage, onNavigate }) => {
               </button>
             </li>
           ))}
+
+          <li className="nav-item">
+            <button className="nav-link nav-link-logout" onClick={handleLogout}>
+              <span className="nav-icon">🚪</span>
+              <span className="nav-label">Logout</span>
+            </button>
+          </li>
         </ul>
       </div>
     </nav>
