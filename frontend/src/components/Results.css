@@ -18,10 +18,21 @@
 
 .main-prediction {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: #ffffff;
   padding: 2rem;
   border-radius: 12px;
   margin-bottom: 2rem;
+}
+
+.main-prediction .disease-name {
+  font-size: 2rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: #ffffff !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .prediction-header {
@@ -61,6 +72,7 @@
   font-size: 2rem;
   font-weight: 700;
   text-transform: capitalize;
+  color: #ffffff;
 }
 
 .all-predictions {
