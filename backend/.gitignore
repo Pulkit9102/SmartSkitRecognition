@@ -1,0 +1,46 @@
+# 🔹 Virtual Environment
+venv/
+env/
+ENV/
+
+# 🔹 Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 🔹 Flask instance folder
+instance/
+
+# 🔹 Environment variables
+.env
+
+# 🔹 Logs
+*.log
+
+# 🔹 Database files (if using SQLite)
+*.db
+*.sqlite3
+
+# 🔹 VS Code / IDE
+.vscode/
+.idea/
+
+# 🔹 OS files
+.DS_Store
+Thumbs.db
+
+# 🔹 Jupyter Notebook checkpoints (if ML project)
+.ipynb_checkpoints/
+
+# 🔹 Model files (optional - if large)
+*.h5
+*.pkl
+
+# 🔹 Build / dist
+build/
+dist/
+
+# 🔹 Temporary files
+*.tmp
+*.bak
