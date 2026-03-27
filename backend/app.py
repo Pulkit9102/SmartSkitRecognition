@@ -7,11 +7,32 @@ import os
 import json
 from serpapi import GoogleSearch
 from dotenv import load_dotenv
+import cv2
+import numpy as np
+
 
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+
+def is_skin_image(file):
+    file_bytes = np.frombuffer(file.read(), np.uint8)
+    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+
+    img = cv2.resize(img, (100, 100))
+    img = cv2.GaussianBlur(img, (5,5), 0)
+
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
+    lower = np.array([0, 20, 70], dtype=np.uint8)
+    upper = np.array([20, 255, 255], dtype=np.uint8)
+
+    mask = cv2.inRange(hsv, lower, upper)
+
+    skin_ratio = np.sum(mask > 0) / (100 * 100)
+
+    return skin_ratio > 0.2
 
 # Paths relative to this file's location
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -157,6 +178,22 @@ def predict():
 
     try:
         file = request.files['image']
+
+        # 🔥 STEP 1: Skin check
+        if not is_skin_image(file):
+            return jsonify({
+                'prediction': 'Invalid Image',
+                'message': 'Please upload a clear skin image',
+                'confidence': 0,
+                'all_predictions': [],
+                'recommendations': {},
+                'similar_images': {}
+            })
+
+        # 🔥 VERY IMPORTANT (reset pointer)
+        file.seek(0)
+
+        # 🔥 STEP 2: Your original logic
         image = Image.open(io.BytesIO(file.read()))
         processed_image = preprocess_image(image)
 
@@ -171,13 +208,12 @@ def predict():
                     'disease': class_names[idx],
                     'confidence': float(prob)
                 })
+
         all_predictions.sort(key=lambda x: x['confidence'], reverse=True)
 
         predicted_disease = class_names[predicted_class_idx] if predicted_class_idx < len(class_names) else 'Unknown'
 
         use_serpapi = request.form.get('use_serpapi', 'true').lower() == 'true'
-        recommendations = {}
-        similar_images = {}
 
         if use_serpapi and SERP_API_KEY:
             recommendations = get_serpapi_recommendations(predicted_disease)
