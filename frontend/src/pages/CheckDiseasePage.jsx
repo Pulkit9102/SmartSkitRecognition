@@ -75,18 +75,8 @@ const CheckDiseasePage = ({
         {error && (
         <div className="error-message">
         <p><strong>⚠️ {error.error}</strong></p>
-        <p>{error.message}</p>
-
-        {error.error === "Unsupported file format" && (
-          <p>💡 Tip: Use JPG, JPEG, or PNG images only.</p>
-        )}
-
-        {error.error === "Not a skin image" && (
-          <p>💡 Tip: Upload a clear image of skin area.</p>
-        )}
-        </div>
-    )}
-
+        <p><b>Tip: </b>{error.message}</p>
+        </div>)}
       {results && (
         <>
           <Results results={results} />
