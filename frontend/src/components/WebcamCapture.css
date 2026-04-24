@@ -1,0 +1,103 @@
+.webcam-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.webcam-card {
+  background: #fff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 720px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.webcam-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.webcam-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #1e293b;
+}
+
+.webcam-close {
+  background: transparent;
+  border: none;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #475569;
+  padding: 0 0.5rem;
+}
+
+.webcam-close:hover {
+  color: #0f172a;
+}
+
+.webcam-video-wrap {
+  position: relative;
+  background: #000;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.webcam-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.webcam-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.webcam-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.webcam-error {
+  padding: 1.5rem;
+  text-align: center;
+  color: #b91c1c;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .webcam-card {
+    border-radius: 14px;
+  }
+  .webcam-header h3 {
+    font-size: 1rem;
+  }
+}

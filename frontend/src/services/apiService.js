@@ -66,6 +66,25 @@ const apiService = {
   },
 
   /**
+   * Send a chat message to the skincare chatbot.
+   * @param {string} message
+   * @param {Array<{role: 'user'|'assistant', content: string}>} history
+   * @returns {Promise<{reply: string}>}
+   */
+  async chat(message, history = []) {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/chat`,
+        { message, history },
+        { headers: { 'Content-Type': 'application/json' }, timeout: 35000 }
+      );
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  },
+
+  /**
    * Handle API errors
    * @param {Error} error - The error object
    */

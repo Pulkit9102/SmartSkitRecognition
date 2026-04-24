@@ -10,11 +10,46 @@ from dotenv import load_dotenv
 import cv2
 import numpy as np
 
+try:
+    from openai import OpenAI
+except ImportError:
+    OpenAI = None
+
 
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+
+# --- Chatbot (OpenAI) ---
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
+OPENAI_CHAT_MODEL = os.getenv('OPENAI_CHAT_MODEL', 'gpt-4o-mini')
+CHAT_HISTORY_LIMIT = 10  # last N messages kept for context
+
+_openai_client = None
+if OPENAI_API_KEY and OpenAI is not None:
+    try:
+        _openai_client = OpenAI(api_key=OPENAI_API_KEY)
+    except Exception as e:
+        print(f"OpenAI client init failed: {e}")
+        _openai_client = None
+
+CHAT_SYSTEM_PROMPT = (
+    "You are a professional dermatologist assistant chatbot for the SkinCare AI app.\n"
+    "You answer ONLY skincare and skin-related queries (skin conditions, hygiene, "
+    "routines, sunscreen, acne, eczema, psoriasis, hair/scalp skin, general "
+    "dermatology guidance).\n\n"
+    "Rules:\n"
+    "- Provide accurate, safe, and helpful skincare advice.\n"
+    "- Do NOT give dangerous instructions or prescribe specific prescription drugs "
+    "or dosages. You may mention common over-the-counter ingredients (e.g., salicylic "
+    "acid, benzoyl peroxide, ceramides) at a general educational level.\n"
+    "- Always recommend consulting a qualified dermatologist for diagnosis or "
+    "persistent/severe symptoms.\n"
+    "- Be clear, simple, and conversational. Keep replies concise.\n"
+    "- If the question is unrelated to skin/skincare, politely refuse with: "
+    "\"I can only help with skincare-related questions.\""
+)
 
 def is_skin_image(file):
     file_bytes = np.frombuffer(file.read(), np.uint8)
@@ -159,13 +194,67 @@ def health_check():
         'status': 'healthy',
         'model_loaded': model is not None,
         'classes_loaded': len(class_names) > 0,
-        'serpapi_configured': bool(SERP_API_KEY)
+        'serpapi_configured': bool(SERP_API_KEY),
+        'openai_configured': _openai_client is not None,
+        'openai_key_present': bool(OPENAI_API_KEY),
+        'openai_sdk_available': OpenAI is not None,
     })
 
 
 @app.route('/api/classes', methods=['GET'])
 def get_classes():
     return jsonify({'classes': class_names, 'total': len(class_names)})
+
+
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    """Skincare-only chatbot powered by OpenAI.
+
+    Request JSON: { "message": str, "history": [{role, content}, ...] }
+    Response JSON: { "reply": str }
+    """
+    if _openai_client is None:
+        return jsonify({'error': 'Chatbot is not configured on the server.'}), 503
+
+    data = request.get_json(silent=True) or {}
+    message = (data.get('message') or '').strip()
+    history = data.get('history') or []
+
+    if not message:
+        return jsonify({'error': 'Message is required.'}), 400
+    if len(message) > 2000:
+        return jsonify({'error': 'Message is too long.'}), 413
+
+    # Sanitize history: only keep role/content pairs with valid roles, last N items
+    clean_history = []
+    if isinstance(history, list):
+        for item in history[-CHAT_HISTORY_LIMIT:]:
+            if not isinstance(item, dict):
+                continue
+            role = item.get('role')
+            content = item.get('content')
+            if role in ('user', 'assistant') and isinstance(content, str) and content.strip():
+                clean_history.append({'role': role, 'content': content[:2000]})
+
+    messages = [{'role': 'system', 'content': CHAT_SYSTEM_PROMPT}]
+    messages.extend(clean_history)
+    messages.append({'role': 'user', 'content': message})
+
+    try:
+        response = _openai_client.chat.completions.create(
+            model=OPENAI_CHAT_MODEL,
+            messages=messages,
+            temperature=0.4,
+            max_tokens=400,
+            timeout=30,
+        )
+        reply = (response.choices[0].message.content or '').strip()
+        if not reply:
+            reply = 'Sorry, I could not generate a response. Please try again.'
+        return jsonify({'reply': reply})
+    except Exception as e:
+        print(f"Chat error: {e}")
+        return jsonify({'error': 'Something went wrong. Please try again.'}), 502
 
 
 @app.route('/api/predict', methods=['POST'])
@@ -179,7 +268,7 @@ def predict():
     try:
         file = request.files['image']
 
-        # 🔥 STEP 1: Skin check
+        # STEP 1: Skin check
         if not is_skin_image(file):
             return jsonify({
                 'prediction': 'Invalid Image',
@@ -190,10 +279,10 @@ def predict():
                 'similar_images': {}
             })
 
-        # 🔥 VERY IMPORTANT (reset pointer)
+        # Reset pointer
         file.seek(0)
 
-        # 🔥 STEP 2: Your original logic
+        # STEP 2: Original logic
         image = Image.open(io.BytesIO(file.read()))
         processed_image = preprocess_image(image)
 

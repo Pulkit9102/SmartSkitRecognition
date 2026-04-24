@@ -7,6 +7,7 @@ import CommonDiseasesPage from './pages/CommonDiseasesPage.jsx';
 import PrecautionsPage from './pages/PrecautionsPage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
 import AuthPage from './pages/AuthPage.jsx';
+import Chatbot from './components/Chatbot.jsx';
 import apiService from './services/apiService';
 
 function App() {
@@ -125,6 +126,8 @@ function App() {
           </p>
         </div>
       </footer>
+
+      <Chatbot />
     </div>
   );
 }
