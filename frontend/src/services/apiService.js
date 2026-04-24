@@ -88,19 +88,25 @@ const apiService = {
    * Handle API errors
    * @param {Error} error - The error object
    */
-  handleError(error) {
-    if (error.response) {
-      // Server responded with error
-      const message = error.response.data?.error || 'An error occurred';
-      return new Error(message);
-    } else if (error.request) {
-      // Request made but no response
-      return new Error('Cannot connect to server. Please ensure the backend is running.');
-    } else {
-      // Something else happened
-      return new Error(error.message || 'An unexpected error occurred');
-    }
-  },
+ handleError(error) {
+  if (error.response && error.response.data) {
+    // 🔥 Return FULL backend response
+    return {
+      error: error.response.data.error || "Error",
+      message: error.response.data.message || "Something went wrong"
+    };
+  } else if (error.request) {
+    return {
+      error: "Network Error",
+      message: "Cannot connect to server. Please ensure the backend is running."
+    };
+  } else {
+    return {
+      error: "Error",
+      message: error.message || "An unexpected error occurred"
+    };
+  }
+}
 };
 
 export default apiService;

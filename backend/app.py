@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
-import numpy as np
 from PIL import Image
 import io
 import os
@@ -51,9 +50,17 @@ CHAT_SYSTEM_PROMPT = (
     "\"I can only help with skincare-related questions.\""
 )
 
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 def is_skin_image(file):
     file_bytes = np.frombuffer(file.read(), np.uint8)
     img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+
+    if img is None:
+        return False
 
     img = cv2.resize(img, (100, 100))
     img = cv2.GaussianBlur(img, (5,5), 0)
@@ -268,16 +275,18 @@ def predict():
     try:
         file = request.files['image']
 
+        if not allowed_file(file.filename):
+            return jsonify({
+        "error": "Unsupported file format",
+        "message": "Please upload only JPG, JPEG, or PNG images"
+        }), 400
+
         # STEP 1: Skin check
         if not is_skin_image(file):
             return jsonify({
-                'prediction': 'Invalid Image',
-                'message': 'Please upload a clear skin image',
-                'confidence': 0,
-                'all_predictions': [],
-                'recommendations': {},
-                'similar_images': {}
-            })
+            "error": "Not a skin image",
+            "message": "Please upload a clear image of skin area"
+        }), 400
 
         # Reset pointer
         file.seek(0)

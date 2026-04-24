@@ -39,25 +39,33 @@ function App() {
     setError(null);
   }, []);
 
-  const handleAnalyze = async () => {
-    if (!selectedImage) {
-      setError('Please select an image first');
-      return;
-    }
+const handleAnalyze = async () => {
+  if (!selectedImage) {
+    setError({
+      error: "No image selected",
+      message: "Please select an image first"
+    });
+    return;
+  }
 
-    setLoading(true);
-    setError(null);
+  setLoading(true);
+  setError(null);
+  setResults(null); // 🔥 clear old results
 
-    try {
-      const data = await apiService.predictDisease(selectedImage, useSerpApi);
-      setResults(data);
-    } catch (err) {
-      setError(err.message || 'An error occurred during analysis');
-      console.error('Analysis error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const data = await apiService.predictDisease(selectedImage, useSerpApi);
+    setResults(data);
+  } catch (err) {
+    setError({
+      error: err.error || "Error",
+      message: err.message || "An error occurred during analysis"
+    });
+
+    console.error("Analysis error:", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleReset = () => {
     setSelectedImage(null);
