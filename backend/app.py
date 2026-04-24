@@ -52,7 +52,7 @@ def load_model_and_classes():
     except ImportError:
         try:
             import tensorflow as tf
-            from tensorflow import keras
+            keras = tf.keras
         except Exception as e:
             print("TensorFlow not available:", str(e))
             model = None
